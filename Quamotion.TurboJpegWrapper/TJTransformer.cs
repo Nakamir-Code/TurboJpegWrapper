@@ -27,6 +27,7 @@ namespace TurboJpegWrapper
         /// </exception>
         public TJTransformer()
         {
+            TurboJpegImport.Initialize();
             this.transformHandle = TurboJpegImport.TjInitTransform();
 
             if (this.transformHandle == IntPtr.Zero)

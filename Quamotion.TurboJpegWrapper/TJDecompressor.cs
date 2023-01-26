@@ -24,6 +24,7 @@ namespace TurboJpegWrapper
         /// </exception>
         public TJDecompressor()
         {
+            TurboJpegImport.Initialize();
             this.decompressorHandle = TurboJpegImport.TjInitDecompress();
 
             if (this.decompressorHandle == IntPtr.Zero)
@@ -157,17 +158,16 @@ namespace TurboJpegWrapper
         /// <param name="width">Width of image in pixels.</param>
         /// <param name="height">Height of image in pixels.</param>
         /// <param name="stride">Bytes per line in the destination image.</param>
-        /// <returns>Raw pixel data of specified format.</returns>
         /// <exception cref="TJException">Throws if underlying decompress function failed.</exception>
         /// <exception cref="ObjectDisposedException">Object is disposed and can not be used anymore.</exception>
-        public unsafe byte[] Decompress(byte[] jpegBuf, TJPixelFormat destPixelFormat, TJFlags flags, out int width, out int height, out int stride)
+        public unsafe void Decompress(byte[] jpegBuf, TJPixelFormat destPixelFormat, TJFlags flags, out int width, out int height, out int stride)
         {
             Verify.NotDisposed(this);
 
             var jpegBufSize = (ulong)jpegBuf.Length;
             fixed (byte* jpegPtr = jpegBuf)
             {
-                return this.Decompress((IntPtr)jpegPtr, jpegBufSize, destPixelFormat, flags, out width, out height, out stride);
+                this.Decompress((IntPtr)jpegPtr, jpegBufSize, destPixelFormat, flags, out width, out height, out stride);
             }
         }
 

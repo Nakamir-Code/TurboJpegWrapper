@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace TurboJpegWrapper
@@ -62,7 +63,48 @@ namespace TurboJpegWrapper
         /// </summary>
         private static bool useTjDecompress2 = false;
 
+        private static bool _initializedTj = false;
+
         public const string UnmanagedLibrary = "turbojpeg";
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        static extern IntPtr LoadLibraryW(string fileName);
+
+        public static void Initialize()
+        {
+            if (_initializedTj) return;
+            _initializedTj = _Initialize();
+            if (!_initializedTj)
+                throw new Exception("Error! Could not find turbojpeg.dll");
+        }
+
+        private static bool _Initialize()
+        {
+            if (LoadLibraryW("turbojpeg.dll") != IntPtr.Zero) return true;
+            if (LoadLibraryW($"{AppDomain.CurrentDomain.BaseDirectory}runtimes/win10-arm/native/turbojpeg.dll") != IntPtr.Zero) return true;
+
+            // DirSearch(AppDomain.CurrentDomain.BaseDirectory);
+
+            // Helper function if you can't find the DLL.
+            static void DirSearch(string dir)
+            {
+                try
+                {
+                    foreach (string f in Directory.GetFiles(dir))
+                        System.Diagnostics.Debug.WriteLine(f);
+                    foreach (string d in Directory.GetDirectories(dir))
+                    {
+                        System.Diagnostics.Debug.WriteLine(d);
+                        DirSearch(d);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            }
+            return false;
+        }
 
 #if NET45
         static TurboJpegImport()
