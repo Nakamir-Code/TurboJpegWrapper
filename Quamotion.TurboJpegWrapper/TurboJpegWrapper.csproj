@@ -15,6 +15,12 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\libjpeg-turbo\build\Release\turbojpeg.dll" Link="turbojpeg.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
     
   <ItemGroup>
 	<PackageReference Include="System.Memory" Version="4.5.4" />

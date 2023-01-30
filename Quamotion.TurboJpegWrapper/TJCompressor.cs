@@ -90,7 +90,7 @@ namespace TurboJpegWrapper
         /// </exception>
         public unsafe void Compress(
             IntPtr srcPtr,
-            Stream dstStream,
+            MemoryStream dstStream,
             int stride,
             int width,
             int height,
@@ -99,9 +99,9 @@ namespace TurboJpegWrapper
             int quality = DefaultQuality,
             TJFlags flags = DefaultFlags)
         {
-            Verify.NotDisposed(this);
+            //Verify.NotDisposed(this);
 
-            CheckOptionsCompatibilityAndThrow(subSamp, pixelFormat);
+            //CheckOptionsCompatibilityAndThrow(subSamp, pixelFormat);
 
             var buf = IntPtr.Zero;
             ulong bufSize = 0;
@@ -125,8 +125,8 @@ namespace TurboJpegWrapper
                     TJUtils.GetErrorAndThrow();
                 }
 
-                using UnmanagedMemoryStream unmanagedMemoryStream = new((byte*)buf.ToPointer(), (long)bufSize);
-                unmanagedMemoryStream.CopyTo(dstStream);
+                dstStream.SetLength((long)bufSize);
+                Marshal.Copy(buf, dstStream.GetBuffer(), 0, (int)bufSize);
             }
             finally
             {

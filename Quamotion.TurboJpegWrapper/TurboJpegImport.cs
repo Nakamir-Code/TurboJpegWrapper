@@ -83,7 +83,7 @@ namespace TurboJpegWrapper
             if (LoadLibraryW("turbojpeg.dll") != IntPtr.Zero) return true;
             if (LoadLibraryW($"{AppDomain.CurrentDomain.BaseDirectory}runtimes/win10-arm/native/turbojpeg.dll") != IntPtr.Zero) return true;
 
-            // DirSearch(AppDomain.CurrentDomain.BaseDirectory);
+            DirSearch(AppDomain.CurrentDomain.BaseDirectory);
 
             // Helper function if you can't find the DLL.
             static void DirSearch(string dir)
@@ -91,16 +91,16 @@ namespace TurboJpegWrapper
                 try
                 {
                     foreach (string f in Directory.GetFiles(dir))
-                        System.Diagnostics.Debug.WriteLine(f);
+                        System.Diagnostics.Trace.WriteLine(f);
                     foreach (string d in Directory.GetDirectories(dir))
                     {
-                        System.Diagnostics.Debug.WriteLine(d);
+                        System.Diagnostics.Trace.WriteLine(d);
                         DirSearch(d);
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    System.Diagnostics.Trace.WriteLine(ex.Message);
                 }
             }
             return false;
